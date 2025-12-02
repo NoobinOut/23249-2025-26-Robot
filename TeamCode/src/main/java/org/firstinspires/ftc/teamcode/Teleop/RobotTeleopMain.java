@@ -25,6 +25,7 @@ public class RobotTeleopMain extends OpMode {
     Shooter shooter;
 
     boolean lastB = false;
+    boolean lasta = false;
 
     // all this is called when the init button is pressed
     @Override
@@ -55,12 +56,52 @@ public class RobotTeleopMain extends OpMode {
                 -gamepad1.left_stick_x,
                 gamepad1.left_stick_y);
 
+        if(gamepad1.left_trigger > 0.25){
+            shooter.Unstuck();
+        }
+        else if(gamepad1.right_trigger > 0.25){
+            shooter.SpeedUp();
+        }
+
+        if(gamepad1.a && !lasta){
+            lasta = true;
+            if(shooter.getLaunchSpeed() == 0.6) {
+                shooter.setLaunchSpeed(1);
+                telemetry.addData("ShooterMode", "RED CARD!");
+            }
+            else if(shooter.getLaunchSpeed() == 0.4) {
+                shooter.setLaunchSpeed(0.6);
+                telemetry.addData("ShooterMode", "Long Shot");
+            }
+            else if(shooter.getLaunchSpeed() == 1) {
+                shooter.setLaunchSpeed(0.4);
+                telemetry.addData("ShooterMode", "Close Shot");
+            }
+            else{
+                telemetry.addData("ShooterMode", "Didn't change");
+            }
+            telemetry.update();
+        }
+        else if(!gamepad1.right_bumper){
+            lasta = false;
+        }
+
+        if(gamepad1.dpad_up){
+            shooter.setResting(shooter.getResting() + 0.001);
+        }
+        else if(gamepad1.dpad_down){
+            shooter.setResting(shooter.getResting() - 0.001);
+        }
+
         if(gamepad1.b && !lastB){
             lastB = true;
             shooter.Shoot(75000);
         }
         else if(!gamepad1.b){
             lastB = false;
+        }
+
+        if(!(gamepad1.left_trigger > 0.25) && !(gamepad1.right_trigger > 0.25) && !gamepad1.b){
             shooter.stopShooting();
         }
     }

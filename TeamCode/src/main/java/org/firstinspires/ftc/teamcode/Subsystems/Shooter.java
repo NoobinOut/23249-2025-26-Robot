@@ -12,6 +12,10 @@ public class Shooter{
     Servo leftServo;
     Servo rightServo;
 
+    double restingPosition;
+    double launchSpeed;
+    double lastLaunchSpeed;
+
     Telemetry telemetry;
 
 
@@ -24,29 +28,72 @@ public class Shooter{
 
         leftServo.setPosition(0.5);
         rightServo.setPosition(0.5);
+
+        restingPosition = 0;
+        launchSpeed = 0.6;
+    }
+
+    public double getResting(){
+        return restingPosition;
+    }
+
+    public void setResting(double set){
+        telemetry.addData("ShooterResting", set);
+        telemetry.update();
+        restingPosition = set;
+    }
+
+    public double getLaunchSpeed(){
+        return launchSpeed;
+    }
+
+    public void setLaunchSpeed(double launchSpeed){
+        this.launchSpeed = launchSpeed;
+    }
+
+    public void SpeedUp(){
+        launchMotor.setPower(0.6);
+    }
+
+    public void Unstuck(){
+        launchMotor.setPower(-0.75);
     }
 
     public void Shoot(int shootWait){
-        int i = shootWait;
+        if(launchMotor.getPower() < 0.1){
+            int i = shootWait;
+            while(i > 0){
+                telemetry.addData("Shooter", i);
+                telemetry.update();
+                launchMotor.setPower(0.6);
+
+                leftServo.setPosition(0.5 - restingPosition);
+                rightServo.setPosition(0.5 + restingPosition);
+
+                i--;
+            }
+        }
+
+        int i = shootWait/8;
         while(i > 0){
             telemetry.addData("Shooter", i);
             telemetry.update();
             launchMotor.setPower(0.6);
 
-            leftServo.setPosition(0.5);
-            rightServo.setPosition(0.5);
+            leftServo.setPosition(0.25);
+            rightServo.setPosition(0.75);
 
             i--;
         }
-        launchMotor.setPower(0.6);
-        leftServo.setPosition(0.25);
-        rightServo.setPosition(0.75);
+
+        leftServo.setPosition(0.5 - restingPosition);
+        rightServo.setPosition(0.5 + restingPosition);
     }
 
     public void stopShooting(){
         launchMotor.setPower(-0.1);
         launchMotor.setPower(0);
-        leftServo.setPosition(0.5);
-        rightServo.setPosition(0.5);
+        leftServo.setPosition(0.5 - restingPosition);
+        rightServo.setPosition(0.5 + restingPosition);
     }
 }
