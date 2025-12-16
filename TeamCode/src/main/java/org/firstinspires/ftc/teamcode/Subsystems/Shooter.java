@@ -60,19 +60,6 @@ public class Shooter{
     }
 
     public void Shoot(int shootWait){
-        if(launchMotor.getPower() < 0.1){
-            int i = shootWait;
-            while(i > 0){
-                telemetry.addData("Shooter", i);
-                telemetry.update();
-                launchMotor.setPower(0.6);
-
-                leftServo.setPosition(0.5 - restingPosition);
-                rightServo.setPosition(0.5 + restingPosition);
-
-                i--;
-            }
-        }
 
         int i = shootWait/8;
         while(i > 0){
@@ -82,6 +69,24 @@ public class Shooter{
 
             leftServo.setPosition(0.25);
             rightServo.setPosition(0.75);
+
+            i--;
+        }
+
+        leftServo.setPosition(0.5 - restingPosition);
+        rightServo.setPosition(0.5 + restingPosition);
+    }
+
+    public void UnShoot(int shootWait){
+
+        int i = shootWait/8;
+        while(i > 0){
+            telemetry.addData("Shooter", i);
+            telemetry.update();
+            launchMotor.setPower(-1);
+
+            leftServo.setPosition(0.75);
+            rightServo.setPosition(0.25);
 
             i--;
         }
