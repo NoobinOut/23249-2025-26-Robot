@@ -118,6 +118,7 @@ public class StarterBotAuto extends OpMode
     private ElapsedTime shotTimer = new ElapsedTime();
     private ElapsedTime feederTimer = new ElapsedTime();
     private ElapsedTime driveTimer = new ElapsedTime();
+    private ElapsedTime waitTimer = new ElapsedTime();
 
     // Declare OpMode members.
     private DcMotor leftDrive = null;
@@ -163,8 +164,6 @@ public class StarterBotAuto extends OpMode
         WAIT_FOR_LAUNCH,
         DRIVING_AWAY_FROM_GOAL,
         ROTATING,
-        ROTATING2,
-        DRIVING_To_Goal,
         COMPLETE;
     }
 
@@ -191,7 +190,7 @@ public class StarterBotAuto extends OpMode
 
         // import ftcLib
         // Creates a PIDFController with gains kP, kI, and kD
-        PIDFController = new PIDController(0.005, 0, 0);
+        PIDFController = new PIDController(0.003, 0, 0);
         PIDFController.setTolerance(0);
 
 
@@ -347,7 +346,7 @@ public class StarterBotAuto extends OpMode
                  * the robot has been within a tolerance of the target position for "holdSeconds."
                  * Once the function returns "true" we reset the encoders again and move on.
                  */
-                if(drive(DRIVE_SPEED, 2.6, DistanceUnit.METER, 1)){
+                if(drive(DRIVE_SPEED, 3.25, DistanceUnit.METER, 1)){
                     leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     autonomousState = AutonomousState.ROTATING;
@@ -356,38 +355,16 @@ public class StarterBotAuto extends OpMode
 
             case ROTATING:
                 if(alliance == Alliance.RED){
-                    robotRotationAngle = 90;
+                    robotRotationAngle = 165;
                 } else if (alliance == Alliance.BLUE){
-                    robotRotationAngle = -90;
+                    robotRotationAngle = -165;
                 }
 
                 if(rotate(ROTATE_SPEED, robotRotationAngle, AngleUnit.DEGREES,1)){
                     leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    autonomousState = AutonomousState.DRIVING_To_Goal;
-                }
-                break;
-
-            case ROTATING2:
-                if(alliance == Alliance.RED){
-                    robotRotationAngle = 90;
-                } else if (alliance == Alliance.BLUE){
-                    robotRotationAngle = -90;
-                }
-
-                if(rotate(ROTATE_SPEED, robotRotationAngle, AngleUnit.DEGREES,1)){
-                    leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    shotsToFire = 3;
-                    autonomousState = AutonomousState.WAIT_FOR_LAUNCH;
-                }
-                break;
-
-            case DRIVING_To_Goal:
-                if(drive(DRIVE_SPEED, 2.6, DistanceUnit.METER, 1)){
-                    leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    autonomousState = AutonomousState.ROTATING2;
+                    waitTimer.reset();
+                    autonomousState = AutonomousState.COMPLETE;
                 }
                 break;
         }

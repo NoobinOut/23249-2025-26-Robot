@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -8,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Shooter{
 
-    DcMotor launchMotor;
+    DcMotorEx launchMotor;
     Servo leftServo;
     Servo rightServo;
 
@@ -19,7 +20,7 @@ public class Shooter{
     Telemetry telemetry;
 
 
-    public Shooter(DcMotor LaunchMotor, Servo leftServo, Servo rightServo, Telemetry telemetry){
+    public Shooter(DcMotorEx LaunchMotor, Servo leftServo, Servo rightServo, Telemetry telemetry){
         launchMotor = LaunchMotor;
         this.telemetry = telemetry;
 
@@ -31,6 +32,10 @@ public class Shooter{
 
         restingPosition = 0;
         launchSpeed = 0.6;
+    }
+
+    public double getCurrentSpeed(){
+        return launchMotor.getVelocity();
     }
 
     public double getResting(){
@@ -52,11 +57,11 @@ public class Shooter{
     }
 
     public void SpeedUp(){
-        launchMotor.setPower(0.6);
+        launchMotor.setVelocity(1150);
     }
 
     public void Unstuck(){
-        launchMotor.setPower(-0.75);
+        launchMotor.setVelocity(-1150);;
     }
 
     public void Shoot(int shootWait){

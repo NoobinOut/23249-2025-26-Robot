@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Subsystems.Shooter;
@@ -16,7 +17,7 @@ public class RobotTeleopMain extends OpMode {
     DcMotor motorLeft;
     DcMotor motorRight;
 
-    DcMotor launchMotor;
+    DcMotorEx launchMotor;
     Servo leftServo;
     Servo rightServo;
 
@@ -39,7 +40,7 @@ public class RobotTeleopMain extends OpMode {
         motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        launchMotor = hardwareMap.dcMotor.get("motorLaunch");
+        launchMotor = hardwareMap.get(DcMotorEx.class,"motorLaunch");
 
         leftServo = hardwareMap.servo.get("servoLeft");
         rightServo = hardwareMap.servo.get("servoRight");
@@ -73,7 +74,7 @@ public class RobotTeleopMain extends OpMode {
             shooter.setResting(shooter.getResting() - 0.001);
         }
 
-        if(gamepad1.b && !lastB){
+        if(gamepad1.b && !lastB && (shooter.getCurrentSpeed() > 1075 && shooter.getCurrentSpeed() < 1155)){
             lastB = true;
             shooter.Shoot(75000);
         }
@@ -92,6 +93,9 @@ public class RobotTeleopMain extends OpMode {
         if(!(gamepad1.left_trigger > 0.25) && !(gamepad1.right_trigger > 0.25) && !gamepad1.b && !gamepad1.y){
             shooter.stopShooting();
         }
+
+        telemetry.addData("Shooter Speed", shooter.getCurrentSpeed());
+        telemetry.update();
     }
 
     synchronized public void drive(double xDir, double yDir) {
