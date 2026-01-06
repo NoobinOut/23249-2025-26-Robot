@@ -80,8 +80,8 @@ public class StarterBotAuto extends OpMode
      * velocity. Here we are setting the target and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    final double LAUNCHER_TARGET_VELOCITY = 1125;
-    final double LAUNCHER_MIN_VELOCITY = 1075;
+    final double LAUNCHER_TARGET_VELOCITY = 1150;
+    final double LAUNCHER_MIN_VELOCITY = 1100;
 
     /*
      * The number of seconds that we wait between each of our 3 shots from the launcher. This
@@ -163,7 +163,8 @@ public class StarterBotAuto extends OpMode
         LAUNCH,
         WAIT_FOR_LAUNCH,
         DRIVING_AWAY_FROM_GOAL,
-        ROTATING,
+        WAIT,
+        DRIVING_TOWARDS_GOAL,
         COMPLETE;
     }
 
@@ -238,15 +239,6 @@ public class StarterBotAuto extends OpMode
          */
         leftDrive.setZeroPowerBehavior(BRAKE);
         rightDrive.setZeroPowerBehavior(BRAKE);
-        launcher.setZeroPowerBehavior(BRAKE);
-
-        /*
-         * Here we set our launcher to the RUN_USING_ENCODER runmode.
-         * If you notice that you have no control over the velocity of the motor, and it just jumps
-         * right to a number much higher than your set point, make sure that your encoders are plugged
-         * into the port right beside the motor itself.
-         */
-        launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 
         // Tell the driver that initialization is complete.
@@ -346,21 +338,22 @@ public class StarterBotAuto extends OpMode
                  * the robot has been within a tolerance of the target position for "holdSeconds."
                  * Once the function returns "true" we reset the encoders again and move on.
                  */
-                if(drive(DRIVE_SPEED, 3.25, DistanceUnit.METER, 1)){
+                if(drive(DRIVE_SPEED, -130, DistanceUnit.INCH, 1)){
                     leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    autonomousState = AutonomousState.ROTATING;
+                    waitTimer.reset();
+                    autonomousState = AutonomousState.WAIT;
                 }
                 break;
 
-            case ROTATING:
-                if(alliance == Alliance.RED){
-                    robotRotationAngle = 165;
-                } else if (alliance == Alliance.BLUE){
-                    robotRotationAngle = -165;
+            case WAIT:
+                if(waitTimer.seconds() > 3){
+                    autonomousState = AutonomousState.DRIVING_TOWARDS_GOAL;
                 }
+                break;
 
-                if(rotate(ROTATE_SPEED, robotRotationAngle, AngleUnit.DEGREES,1)){
+            case DRIVING_TOWARDS_GOAL:
+                if(drive(-DRIVE_SPEED, 130, DistanceUnit.INCH, 1)){
                     leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     waitTimer.reset();
