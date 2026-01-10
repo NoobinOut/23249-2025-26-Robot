@@ -17,14 +17,17 @@ public class Shooter{
     double restingPosition;
     double launchSpeed;
 
+    Servo statusFlag;
+
     Telemetry telemetry;
 
     private ElapsedTime waitTimer = new ElapsedTime();
 
 
-    public Shooter(DcMotorEx LaunchMotor, Servo leftServo, Servo rightServo, Telemetry telemetry){
+    public Shooter(DcMotorEx LaunchMotor, Servo leftServo, Servo rightServo, Telemetry telemetry, Servo statusFlag){
         launchMotor = LaunchMotor;
         this.telemetry = telemetry;
+        this.statusFlag = statusFlag;
 
         this.leftServo = leftServo;
         this.rightServo = rightServo;
@@ -81,6 +84,7 @@ public class Shooter{
 
                     i--;
                 }
+            statusFlag.setPosition(0);
             }
 
             leftServo.setPosition(0.5 - restingPosition);

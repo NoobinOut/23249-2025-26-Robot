@@ -46,7 +46,7 @@ public class RobotTeleopMain extends OpMode {
         leftServo = hardwareMap.servo.get("servoLeft");
         rightServo = hardwareMap.servo.get("servoRight");
 
-        shooter = new Shooter(launchMotor, leftServo, rightServo, telemetry);
+        shooter = new Shooter(launchMotor, leftServo, rightServo, telemetry, statusFlag);
 
         // Friendly message
         telemetry.addData("Main","All Systems Online!");
@@ -58,7 +58,7 @@ public class RobotTeleopMain extends OpMode {
     public void loop(){
 
         if(shooter.getCurrentSpeed() > 1100 && shooter.getCurrentSpeed() < 1250){
-            statusFlag.setPosition(1);
+            statusFlag.setPosition(0.45);
         }
         else{
             statusFlag.setPosition(0);
