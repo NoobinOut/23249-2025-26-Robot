@@ -83,8 +83,8 @@ public class RobotTeleopMain extends OpMode {
             shooter.setResting(shooter.getResting() - 0.001);
         }
 
-        if(gamepad1.b && (shooter.getCurrentSpeed() > 1000 && shooter.getCurrentSpeed() < 1350)){
-            shooter.Shoot(75000);
+        if(gamepad1.b && (shooter.getCurrentSpeed() > 1100 && shooter.getCurrentSpeed() < 1250)){
+            shooter.Shoot(50000);
         }
 
         if(gamepad1.y && !lastY){
