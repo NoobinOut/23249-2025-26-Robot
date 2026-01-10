@@ -20,6 +20,7 @@ public class RobotTeleopMain extends OpMode {
     DcMotorEx launchMotor;
     Servo leftServo;
     Servo rightServo;
+    Servo statusFlag;
 
     final double speedMultiplier = 1;
 
@@ -37,6 +38,8 @@ public class RobotTeleopMain extends OpMode {
         motorLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        statusFlag = hardwareMap.servo.get("status");
+
 
         launchMotor = hardwareMap.get(DcMotorEx.class,"motorLaunch");
 
@@ -53,6 +56,14 @@ public class RobotTeleopMain extends OpMode {
     // Called every "Frame" in a loop
     @Override
     public void loop(){
+
+        if(shooter.getCurrentSpeed() > 1100 && shooter.getCurrentSpeed() < 1250){
+            statusFlag.setPosition(1);
+        }
+        else{
+            statusFlag.setPosition(0);
+        }
+
         // drive the robot using the player 1 gamepad
         drive(
                 -gamepad1.right_stick_x,
